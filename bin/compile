@@ -37,18 +37,20 @@ mv $CACHE_DIR/$ARCHIVE_NAME $BUILD_DIR/vendor/
 echo "-----> Locating libasound:"
 find / -name "libasound*" 2>/dev/null
 
-LIBRARY_PATH=$(find / -name "*libasound*" | xargs dirname | tr '\n' ':')
+LIBRARY_PATHS=$(find / -name "libasound*" 2>/dev/null | while read file; do
+  dirname "$file"
+done | sort | uniq | tr '\n' ':')
 
-if [ -z "$LIBRARY_PATH" ]; then
+if [ -z "$LIBRARY_PATHS" ]; then
   echo "No libasound paths found. Exiting script."
   exit 1
 else
-  echo "Library paths found: $LIBRARY_PATH"
+  echo "Library paths found: $LIBRARY_PATHS"
 fi
 
 mkdir -p .profile.d
 cat << EOF > .profile.d/configure_libs.sh
-export LD_LIBRARY_PATH="${LIBRARY_PATH}:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${LIBRARY_PATHS}:\$LD_LIBRARY_PATH"
 EOF
 
 chmod +x .profile.d/configure_libs.sh
