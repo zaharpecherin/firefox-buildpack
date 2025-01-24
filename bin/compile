@@ -40,7 +40,7 @@ find / -name "libasound*" 2>/dev/null
 mkdir -p .profile.d
 echo "-----> Created .profile.d folder"
 cat << 'EOF' > .profile.d/configure_libs.sh
-export LD_LIBRARY_PATH="$(find /usr/lib -name "*libasound*" | xargs dirname | tr '\n' ':'):$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$(find / -name "*libasound*" | xargs dirname | tr '\n' ':'):$LD_LIBRARY_PATH"
 EOF
 chmod +x .profile.d/configure_libs.sh
 
