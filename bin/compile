@@ -34,6 +34,14 @@ mkdir -p $BUILD_DIR/vendor
 tar jxf $CACHE_DIR/$FILE_NAME -C $CACHE_DIR
 mv $CACHE_DIR/$ARCHIVE_NAME $BUILD_DIR/vendor/
 
+echo "-----> Library search paths:"
+echo $LD_LIBRARY_PATH
+echo "-----> Locating libasound:"
+find / -name "libasound*" 2>/dev/null
+
 mkdir -p .profile.d
-echo 'export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"' > .profile.d/configure_libs.sh
+echo "-----> Created .profile.d folder"
+cat << 'EOF' > .profile.d/configure_libs.sh
+export LD_LIBRARY_PATH="$(find /usr/lib -name "*libasound*" | xargs dirname | tr '\n' ':'):$LD_LIBRARY_PATH"
+EOF
 chmod +x .profile.d/configure_libs.sh
